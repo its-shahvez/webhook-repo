@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Activity Feed</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f0f2f5; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .event-card { background: #fff; padding: 15px; margin-bottom: 15px; border-radius: 8px; border-left: 6px solid #ccc; }
+        .PUSH { border-left-color: #3b82f6; }
+        .PULL_REQUEST { border-left-color: #f59e0b; }
+        .MERGE { border-left-color: #10b981; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="text-align:center;">GitHub Webhook Feed</h2>
+        <div id="feed"><p>Waiting for events...</p></div>
+    </div>
+    <script>
+        function loadEvents() {
+            fetch('/api/events')
+                .then(res => res.json())
+                .then(data => {
+                    const feed = document.getElementById('feed');
+                    if (data.length === 0) return;
+                    feed.innerHTML = '';
+                    data.forEach(event => {
+                        feed.innerHTML += `<div class="event-card ${event.type}"><strong>${event.type}</strong><p>${event.message}</p></div>`;
+                    });
+                });
+        }
+        loadEvents();
+        setInterval(loadEvents, 15000);
+    </script>
+</body>
+</html>
